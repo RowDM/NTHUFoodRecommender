@@ -9,6 +9,7 @@ import 'package:term_project/services/providers/refresh_provider.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:term_project/services/providers/theme_provider.dart';
 //ROWAN WAS HERE
+//DEMO 2 WORKS!
 //THIS IS MY COMOMENTN FOM TIME PLESAE ACCEPT
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
