@@ -12,6 +12,7 @@ import 'package:term_project/services/providers/theme_provider.dart';
 //DEMO 2 WORKS!
 //DEMO 3 WORKSSS
 //Timmy wants to make a commit, please accept
+//chen demo
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
