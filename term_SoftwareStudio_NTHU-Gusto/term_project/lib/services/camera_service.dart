@@ -52,7 +52,6 @@ class CameraService {
       String? photoUrl = await photoService.uploadPhoto(imageFile);
       if (photoUrl != null) {
         int recordId = await FirebaseService.instance.getAndUpdateId();
-        
         ImageAnalysisService imageAnalysisService = ImageAnalysisService();
         MyRecord? newRecord = await imageAnalysisService.analyzeImageAndGetRecord(photoUrl, recordId.toString());
 
