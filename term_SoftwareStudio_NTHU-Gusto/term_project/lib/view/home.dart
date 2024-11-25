@@ -65,7 +65,7 @@ class _HomeState extends State<Home> {
   double _calculateBMR(int age, double height, double weight) {
     // Harris-Benedict equation (generic formula, not gender-specific)
     if (age <= 0 || height <= 0 || weight <= 0) return 0.0;
-    return 66 + (6.23 * weight) + (12.7 * height) - (6.8 * age);
+    return 88.362 + (13.397 * weight) + (4.799 * height) - (5.677* age);
   }
 
   double _calculateBMI(double height, double weight) {
@@ -86,86 +86,110 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildCircularProgressIndicator(double value, String label, double maxValue) {
-    double progressValue = maxValue > 0 ? value / maxValue : 0;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        SizedBox(
-          height: 180, // Increased height
-          width: 180, // Increased width
-          child: Stack(
-            children: [
-              Center(
-                child: Container(
-                  height: 180, // Match the size of the SizedBox
-                  width: 180, // Match the size of the SizedBox
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 4), // Outer black border
-                    borderRadius: BorderRadius.circular(90), // Make it circular
-                  ),
-                  child: Center(
-                    child: Container(
-                      height: 172, // Slightly smaller to fit inside the outer border
-                      width: 172, // Slightly smaller to fit inside the outer border
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black, width: 2), // Inner black border
-                        borderRadius: BorderRadius.circular(86), // Make it circular
-                      ),
-                      child: CircularProgressIndicator(
-                        value: progressValue.isFinite ? progressValue : 0,
-                        strokeWidth: 12, // Increased stroke width for better visibility
-                        backgroundColor: Colors.grey[300],
-                      ),
+  double progressValue = maxValue > 0 ? value / maxValue : 0;
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+      SizedBox(
+        height: 180, // Increased height
+        width: 180, // Increased width
+        child: Stack(
+          children: [
+            Center(
+              child: Container(
+                height: 180, // Match the size of the SizedBox
+                width: 180, // Match the size of the SizedBox
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 4), // Outer black border
+                  borderRadius: BorderRadius.circular(90), // Make it circular
+                ),
+                child: Center(
+                  child: Container(
+                    height: 172, // Slightly smaller to fit inside the outer border
+                    width: 172, // Slightly smaller to fit inside the outer border
+                    decoration: BoxDecoration(
+                      //border: Border.all(color: Colors.black, width: 2), // Inner black border
+                      borderRadius: BorderRadius.circular(86), // Make it circular
+                      color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(255, 44, 10, 106)?.withOpacity(0.5) : Colors.white, // Conditionally set color based on theme
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4), // Color of the shadow
+                          spreadRadius: 4, // Spread radius
+                          blurRadius: 5, // Blur radius
+                          offset: Offset(0, 4), // Offset in the lower part
+                        ),
+                      ],
+                    ),
+                    child: CircularProgressIndicator(
+                      value: progressValue.isFinite ? progressValue : 0,
+                      strokeWidth: 12, // Increased stroke width for better visibility
+                      backgroundColor: Colors.grey[100],
                     ),
                   ),
                 ),
               ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.local_fire_department,
-                      size: 40,
-                    ),
-                    Text(
-                      '${calories.ceil()}',
-                      style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.orange),
-                    ),
-                    Text(
-                      ' / ${bmr.ceil()}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const Text(
-                      'KCAL LEFT',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                  ],
-                ),
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Text(
+                  //   'Today',
+                  //   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget> [
+                       Text(
+                    '${calories.ceil()}',
+                    style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.orange),
+                  ),
+                       Icon(
+                    Icons.local_fire_department,
+                    size: 40,
+                    color: Colors.amber[900],
+                  ),
+                    ],
+                  ),
+                 
+                  Text(
+                    ' / ${bmr.ceil()}',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const Text(
+                    'KCAL LEFT',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
-  Widget _buildLinearProgressIndicator(double value, String label, double maxValue, Color color, {bool showValueLeft = true}) {
+  Widget _buildLinearProgressIndicator(double value, String label, double maxValue, Color color, IconData icon, {bool showValueLeft = true}) {
     double progressValue = maxValue > 0 ? value / maxValue : 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
+        Icon(icon, size: 24), // Add icon above the progress bar
+        const SizedBox(height: 4),
         Text(
-          label,
+         (showValueLeft) 
+          ? label 
+          : label + ': ' + ((bmi > 30) ? "Obese" : (bmi >= 25 && bmi < 30) ? "Overweight" : (bmi >= 18.5 && bmi < 25) ? "Normal" : (bmi >= 17 && bmi < 18.5) ? "Mild" : (bmi >= 16 && bmi < 17) ? "Moderate" : "Severe"), 
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Container(
           height: 14,
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: Colors.grey[100],
             borderRadius: BorderRadius.circular(5),
-            border: Border.all(color: Colors.black, width: 1), // Black outline
+            //border: Border.all(color: Colors.black, width: 1), // Black outline
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(5),
@@ -185,7 +209,7 @@ class _HomeState extends State<Home> {
           )
         else
           Text(
-            '${(progressValue * 100).toStringAsFixed(1)}%',
+            '${(value).toStringAsFixed(1)}',
             style: const TextStyle(fontSize: 14),
             textAlign: TextAlign.center,
           ),
@@ -197,6 +221,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+       // backgroundColor: Color.fromARGB(255,101, 254, 8)?.withOpacity(0.6),
         title: const Text('Home'),
         actions: [
           IconButton(
@@ -239,10 +264,10 @@ class _HomeState extends State<Home> {
                     ClipPath(
                       clipper: CurvedBottomClipper(),
                       child: Container(
-                        height: 560,
+                        height: 580,
                         color: themeProvider.isDarkTheme
                             ? const Color.fromARGB(255, 44, 10, 106)?.withOpacity(0.5)
-                            : Colors.green[100]?.withOpacity(1), // Color based on theme
+                            : Color.fromARGB(255,101, 254, 8)?.withOpacity(0.5), // Color based on theme
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
@@ -262,20 +287,20 @@ class _HomeState extends State<Home> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
-                                        child: _buildLinearProgressIndicator(protein, 'Protein', prot_max, Colors.purple),
+                                        child: _buildLinearProgressIndicator(protein, 'Protein', prot_max, Colors.purple, Icons.restaurant),
                                       ),
                                       const SizedBox(width: 30),
                                       Expanded(
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 30), // Add space above the Fat bar
-                                            _buildLinearProgressIndicator(fat, 'Fat', fat_max, Colors.blue),
+                                            _buildLinearProgressIndicator(fat, 'Fat', fat_max, Colors.blue, Icons.fastfood),
                                           ],
                                         ),
                                       ),
                                       const SizedBox(width: 30),
                                       Expanded(
-                                        child: _buildLinearProgressIndicator(carbs, 'Carbs', carb_max, Colors.green),
+                                        child: _buildLinearProgressIndicator(carbs, 'Carbs', carb_max, Colors.green, Icons.bakery_dining),
                                       ),
                                     ],
                                   ),
@@ -285,7 +310,15 @@ class _HomeState extends State<Home> {
                                     children: [
                                       Container(
                                         width: 150, // Set a specific width for the BMI progress bar
-                                        child: _buildLinearProgressIndicator(bmi, 'BMI', 40, Colors.red, showValueLeft: false),
+                                        child: Column(
+                                          children: <Widget> [
+                                            
+                                            _buildLinearProgressIndicator(bmi, 'BMI', 50, 
+                                            (bmi > 30)?Colors.red : (bmi >= 25 && bmi < 30) ? Colors.orange: (bmi >= 18.5 && bmi < 25) ? Colors.green : 
+                                            (bmi >= 17 && bmi < 18.5) ? Colors.yellow : (bmi >= 16 && bmi < 17) ? Colors.blue : Colors.indigo[900]!, 
+                                            Icons.accessibility, showValueLeft: false),
+                                          ],
+                                        )
                                       ),
                                     ],
                                   ),
